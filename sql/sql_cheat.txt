@@ -18,16 +18,20 @@ SET column1='hello',column2=NULL
 WHERE col3 in (
 'value1','value2'
 ) 
-AND col4 = '2022-02-28';
+AND col4 = '2022-02-28';                //update a column
 
 update <database>.<schema>.<table1> 
-add column upload_date DATE;
+add column upload_date DATE;            //add column
 
 SELECT "column name", left(column1,3) , count(*) FROM   <database>.<schema>.<table1> //groupby only the first 3 letters
 group by "column name",left(column1,3);
 
 CREATE OR REPLACE VIEW <database>.<schema>.<view1> COPY GRANTS AS 
-SELECT * FROM "ETDT_REPORTING_PROD_DB"."STAGE"."RWA" WHERE LEFT(WRK_CD,1) IN ('A','B','C','D','K','L');
+SELECT * FROM "ETDT_REPORTING_PROD_DB"."STAGE"."RWA" WHERE LEFT(WRK_CD,1) IN ('A','B','C','D','K','L'); //create view
+
+SELECT *,COALESCE(col1,TRIM(col2),TRIM(col3)) as x FROM <database>.<schema>.<table1> //coalesce = if col1 is null then return col2 etc., TRIM() removes front/end trailing                                                                                                                                                      spaces
+DELETE FROM <database>.<schema>.<table1> WHERE SERIAL_NUMBER IN (
+'JTF20974');
 
 #Create a procedure
 
@@ -57,6 +61,7 @@ SHOW PROCEDURES;
 desc procedure test();
 
 # information schema tables
+
 Select *
 from INFORMATION_SCHEMA.tables;
 //where table_name=<table> and table_schema=<schema>;
@@ -99,6 +104,18 @@ SELECT table1.*,
 LEFT JOIN table2 G ON D.col3 = G.col3
 RIGHT JOIN table 3 G2 ON G2.col1 = D.col1 and G.col4 = G2.col4
 where D.col1<>G."column name" AND G.col2 IN ('a','b','c'); 
+
+# Partitions/ window functions
+
+SELECT 
+MAX(reported_dt) OVER(partition by serial_number) AS max_dt,
+*
+FROM <database>.<schema>.<table1>
+WHERE SERIAL_NUMBER IN 
+(
+'07Y01554'); 
+
+the above returns maximun reported_dt for every serial_number 
 
 #Create Task
  
