@@ -1,0 +1,11 @@
+# MERGE FROM OTHER BRANCH
+git checkout present/required_branch
+git merge target_branch
+
+# TO DELETE THE UNPUSHED COMMIT
+git reset HEAD~1
+
+# IF THE SYNC BUTTON ISN'T WORKING IN VS CODE PUT THE BELOW LINE IN CMD IF THE REPO IS FOUND
+git fetch --tags -f
+
+git clone <repo_url>
