@@ -216,3 +216,23 @@ SELECT REPLACE(REPLACE("column name",' '),'-') AS column_replace,
       AS "column_replace3" 
       FROM database.schema.table1 tb1 LEFT JOIN database.schema.table2 tb2 ON tb1.col4 = tb2.col4
  ```
+ # Parsing JSON in snowflake
+ ```
+select distinct ASSET_STRUCTURE_DETAIL_UID,
+  PREVIOUS_MESSAGE:serialNumber::String AS X,
+  SERIAL_NUMBER as SN_ROW,
+  PREVIOUS_MESSAGE:make AS T,
+  SERIAL_NUMBER as SN_OEM,
+  concat_ws(',', ifnull(A.value:hardwarePartNumber,''),ifnull(B.value:hardwarePartNumber,'')) AS dev_rad_hardware,
+  concat_ws(',', ifnull(A.value:commercialType,''),ifnull(B.value:commercialType,'')) AS dev_rad_commercial,
+  concat_ws(',', ifnull(A.value:serialNumber,''), ifnull(B.value:serialNumber,'')) as dev_rad_sn,
+  concat_ws('-', ifnull(A1.value:serialNumber,''),ifnull(A1.value:type,'')) AS component_sn_type
+from database.schema.table1,
+LATERAL FLATTEN( input => PREVIOUS_MESSAGE:components) as A1 ,
+LATERAL FLATTEN( input => PREVIOUS_MESSAGE:devices) as A ,
+LATERAL FLATTEN( input => A.value:radios) as B
+WHERE
+RECORD_OBSOLETE_TIMESTAMP IS NULL
+//PRIMARY_CUSTOMER_IDENTIFIER = '2969920167' and 
+//SERIAL_NUMBER = 'JRP03090' and ASSET_STRUCTURE_DETAIL_UID = '21900250'
+```
