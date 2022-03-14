@@ -1,0 +1,106 @@
+#basics
+select * from <database>.<schema>.<table1>
+union
+select * from <database>.<schema>.<table2>
+
+SELECT * FROM <database>.<schema>.<table1> LIMIT 10;
+
+SELECT MAX(col1) FROM <database>.<schema>.<table1>; //col1 can be a date here as well
+
+SELECT * FROM <database>.<schema>.<table1>  WHERE column2='hello' 
+          AND column1='2022-01-31';
+          
+select * from  <database>.<schema>.<table2>  where 
+column1 in (select eqp_id FROM <database>.<schema>.<table1>);
+
+UPDATE <database>.<schema>.<table1> 
+SET column1='hello',column2=NULL
+WHERE col3 in (
+'value1','value2'
+) 
+AND col4 = '2022-02-28';
+
+update <database>.<schema>.<table1> 
+add column upload_date DATE;
+
+SELECT "column name", left(column1,3) , count(*) FROM   <database>.<schema>.<table1> //groupby only the first 3 letters
+group by "column name",left(column1,3);
+
+CREATE OR REPLACE VIEW <database>.<schema>.<view1> COPY GRANTS AS 
+SELECT * FROM "ETDT_REPORTING_PROD_DB"."STAGE"."RWA" WHERE LEFT(WRK_CD,1) IN ('A','B','C','D','K','L');
+
+#Create a procedure
+
+CREATE OR REPLACE PROCEDURE test(TABLENAME varchar(100))
+returns string not null
+language javascript
+as
+$$
+
+try{
+var stream_select_cmd = `
+INSERT INTO <database>.<schema>.<table1> 
+SELECT * from <database>.<schema>.`+TABLENAME+" limit 1";
+var sql_select_stream = snowflake.createStatement({sqlText: stream_select_cmd});
+var select_stream_result = sql_select_stream.execute();
+}
+catch(err){
+    result =  "Failed: To execute query: " + err;
+}
+return '👍';
+$$;
+
+CALL test('tablename');
+
+SHOW PROCEDURES;
+
+desc procedure test();
+
+# information schema tables
+Select *
+from INFORMATION_SCHEMA.tables;
+//where table_name=<table> and table_schema=<schema>;
+
+# select which columns do not exist in one table when compared to other
+
+Select column_name
+from INFORMATION_SCHEMA.columns
+where table_name=<table1> and table_schema=<schema1>
+
+MINUS
+
+Select column_name
+from INFORMATION_SCHEMA.columns
+where table_name=<table2> and table_schema=<schema2>
+;
+
+# GRANTS
+GRANT USAGE ON SCHEMA <database>.<schema> TO ROLE <role>;
+GRANT SELECT ON ALL TABLES IN SCHEMA <database>.<schema> TO ROLE <role>;
+GRANT SELECT ON ALL VIEWS IN SCHEMA <database>.<schema> TO ROLE <role>;
+
+#CTEs
+
+with table1 as (SELECT * FROM <database>.<schema>.<table1>)
+,table2 as (SELECT * FROM <database>.<schema>.<table2>)
+
+table1 operations with table2
+
+#Joins
+
+SELECT table1.*,
+                    CASE 
+                    G.column1_table2
+                     WHEN x then y
+                     WHEN y THEN z
+                     else G.column1_table2
+                     end as new_column1_table2, 
+                 G2.* FROM table1 D
+LEFT JOIN table2 G ON D.col3 = G.col3
+RIGHT JOIN table 3 G2 ON G2.col1 = D.col1 and G.col4 = G2.col4
+where D.col1<>G."column name" AND G.col2 IN ('a','b','c'); 
+
+#Create Task
+ 
+
+
