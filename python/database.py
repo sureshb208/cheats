@@ -3,7 +3,6 @@
 
 from sqlalchemy import create_engine
 from snowflake.sqlalchemy import URL
-from pydash.arrays import chunk
 import snowflake.connector as sc
 import pandas as pd
 from your_credentials import sf_pwd #can import os environment as well
