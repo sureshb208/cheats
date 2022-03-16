@@ -1,23 +1,35 @@
-# basics
+# Basics
+> Union two tables (they must have similar columns,column order and column order else it will get messed up)
 ```
 select * from database.schema.table1
 union
 select * from database.schema.table2
 ```
+> Union ALL two tables (includes duplicates from two tables as well)
+```
+select * from database.schema.table1
+union ALL
+select * from database.schema.table2
+```
+> LIMIT query value to your desired number
 ```
 SELECT * FROM database.schema.table1 LIMIT 10;
 ```
+> Select max from a column 
 ```
 SELECT MAX(col1) FROM database.schema.table1; //col1 can be a date here as well
 ```
+> where statement
 ```
 SELECT * FROM database.schema.table1  WHERE column2='hello' 
           AND column1='2022-01-31';
-```          
+```    
+select values from table2 where a volumn values exist in table 1
 ```
 select * from  database.schema.table2  where 
 column1 in (select eqp_id FROM database.schema.table1);
 ```
+> update table statements with where
 ```
 UPDATE database.schema.table1 
 SET column1='hello',column2=NULL
@@ -26,22 +38,36 @@ WHERE col3 in (
 ) 
 AND col4 = '2022-02-28';                //update a column
 ```
+> add a column to existing table
 ```
 update database.schema.table1 
 add column upload_date DATE;            //add column
 ```
+> selecting only first(left) or last(right) few characters string a column to existing table
 ```
-SELECT "column name", left(column1,3) , count(*) FROM   database.schema.table1 //groupby only the first 3 letters
-group by "column name",left(column1,3);
+SELECT "column name", left(column1,3), right(column1,4) FROM   database.schema.table1;
 ```
+> groupby only the first 3 letters(left(column1,3)), and return count() or any aggregate functions, multiple groupby can also be done
+```
+SELECT "column name", count(*) FROM   database.schema.table1 
+group by "column name"; // group by just the column name
+
+SELECT "column name", left(column1,3) , count(*) FROM   database.schema.table1 
+group by "column name",left(column1,3); //groupby only the first 3 letters
+```
+> Creating or replacing view or tbale in snowflake
 ```
 CREATE OR REPLACE VIEW database.schema.view1 COPY GRANTS AS 
 SELECT * FROM "ETDT_REPORTING_PROD_DB"."STAGE"."RWA" WHERE LEFT(WRK_CD,1) IN ('A','B','C','D','K','L'); //create view
+
+CREATE OR REPLACE TABLE database.schema.table1 COPY GRANTS AS 
+SELECT * FROM "ETDT_REPORTING_PROD_DB"."STAGE"."RWA" WHERE LEFT(WRK_CD,1) IN ('A','B','C','D','K','L'); //create table
 ```
 > coalesce = if col1 is null then return col2 etc., TRIM() removes front/end trailing spaces
 ```
 SELECT *,COALESCE(col1,TRIM(col2),TRIM(col3)) as x FROM database.schema.table1 
 ```
+> Delete from table with where condition
 ```
 DELETE FROM database.schema.table1 WHERE SERIAL_NUMBER IN (
 'JTF20974');
