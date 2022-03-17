@@ -1,5 +1,5 @@
 # Basics
-> Union two tables (they must have similar columns,column order and column order else it will get messed up)
+> Union two tables (they must have similar columns and column order else it will get messed up)
 ```
 select * from database.schema.table1
 union
