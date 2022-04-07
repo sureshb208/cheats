@@ -15,6 +15,14 @@ select * from database.schema.table2
 ```
 SELECT * FROM database.schema.table1 LIMIT 10;
 ```
+> LIKE query value to your desired number
+```
+SELECT * FROM database.schema.table1 where col1 like 'A%';
+```
+> LIKE query value to your desired number
+```
+SELECT * FROM database.schema.table1 where col1 like any ('A%','B%','C%');
+```
 > Select max from a column 
 ```
 SELECT MAX(col1) FROM database.schema.table1; //col1 can be a date here as well
